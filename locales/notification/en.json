@@ -1,0 +1,26 @@
+{
+    "PRIME_ORDER_PLACED": {
+        "title": "New order",
+        "body": "<firstName> <lastName> placed a new order for table <tableNumber> and seat <seatNumber>."
+    },
+    "PRIME_PAID_BY_CREDIT_CARD": {
+        "title": "Order paid",
+        "body": "<firstName> <lastName> pays order #<orderNumber> by credit card."
+    },
+    "PRIME_PICKUP_ORDER_PLACED": {
+        "title": "Pick up order placed",
+        "body": "New pickup order is placed by <firstName> <lastName>."
+    },
+    "PRIME_PAY_BY_CASH_REQUESTED": {
+        "title": "Order status",
+        "body": "<firstName> <lastName> at table <tableNumber> and seat <seatNumber> has requested to pay for order #<orderId> using cash."
+    },
+    "PRIME_PAY_BY_CASH_REQUESTED_BUILDING": {
+        "title": "Order status",
+        "body": "<firstName> <lastName> at floor <floorName> and room <tableNumber> has requested to pay for order #<orderId> using cash."
+    },
+    "PRIME_TENDERED_BY_POS": {
+        "title": "Order payment completed",
+        "body": "<firstName> <lastName> has paid for order #xyz on Point of Sales for a total amount of $<amount>."
+    }
+}

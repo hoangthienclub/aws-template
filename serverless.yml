@@ -1,0 +1,177 @@
+service: console-shipments 
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+
+  stage: dev
+  region: us-east-1
+
+  vpc: ${file(./vpc.yml):${opt:env_var, opt:stage, self:provider.stage}}
+
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "s3:*"
+      Resource: "*"
+
+    - Effect: "Allow"
+      Action:
+        - "cognito-identity:*"
+        - "cognito-idp:*"
+        - "cognito-sync:*"
+      Resource: "*"
+
+    - Effect: "Allow"
+      Action:
+        - "lambda:InvokeFunction"
+        - "logs:CreateLogStream"
+        - "logs:PutLogEvents"
+        - "ec2:CreateNetworkInterface"
+        - "ec2:DescribeNetworkInterfaces"
+        - "ec2:DetachNetworkInterface"
+        - "ec2:DeleteNetworkInterface"
+      Resource: "*"
+    - Effect: "Allow"
+      Action:
+        - "secretsmanager:GetSecretValue"
+        - "kms:Decrypt"
+      Resource: "*"
+
+  environment: ${file(./variables.yml):${opt:env_var, opt:stage, self:provider.stage}}
+
+plugins:
+  - serverless-offline
+  - serverless-prune-plugin
+  # - serverless-plugin-split-stacks
+  - serverless-domain-manager
+  - serverless-dependson-plugin
+  - serverless-mocha-plugin
+  - serverless-step-functions
+  # - serverless-pseudo-parameters
+  - serverless-plugin-typescript
+  - serverless-jest-plugin
+
+custom:
+  authFunc:
+    arn: ${self:custom.variables.${opt:env_var, opt:stage, self:provider.stage}.USER_POOL_ARN}
+    identitySource: method.request.header.Authorization
+    type: token
+
+  authToken:
+    arn: ${self:custom.variables.${opt:env_var, opt:stage, self:provider.stage}.AUTH_TOKEN_FUNC_ARN}
+    resultTtlInSeconds: 0
+    identitySource: method.request.header.Authorization
+    type: request
+
+  authApiKey:
+    arn: ${self:custom.variables.${opt:env_var, opt:stage, self:provider.stage}.AUTH_API_KEY_FUNC_ARN}
+    resultTtlInSeconds: 0
+    identitySource: context.identity.api-key
+    type: request
+
+  authBoth:
+    arn: ${self:custom.variables.${opt:env_var, opt:stage, self:provider.stage}.AUTH_BOTH_FUNC_ARN}
+    resultTtlInSeconds: 0
+    identitySource: context.identity.sourceIp
+    type: request
+
+  authEither:
+    arn: ${self:custom.variables.${opt:env_var, opt:stage, self:provider.stage}.AUTH_EITHER_FUNC_ARN}
+    resultTtlInSeconds: 0
+    identitySource: context.identity.sourceIp
+    type: request
+
+  prune:
+    automatic: true
+    number: 1
+  splitStacks:
+    perFunction: true
+    perType: false
+
+  dependsOn:
+    enabled: true
+
+  variables: ${file(./variables.yml)}
+
+  version:
+    dev: ""
+    stg: ""
+    prod: ""
+
+  domain:
+    dev: api.dev.mvpprototype.com
+    stg: api.uat.mvpprototype.com
+    prod: omniapi.pchintl.com
+
+  certificateName:
+    dev: "*.mvpprototype.com"
+    stg: "*.uat.mvpprototype.com"
+    prod: "*.pchintl.com"
+
+  customDomain:
+    domainName: ${self:custom.domain.${opt:stage, self:provider.stage}}
+    basePath: products
+    stage: ${opt:stage, self:provider.stage}
+    createRoute53Record: false
+    certificateName: ${self:custom.certificateName.${opt:stage, self:provider.stage}}
+    endpointType: edge
+
+  cors:
+    origin: "*"
+    headers:
+      - Content-Type
+      - X-Amz-Date
+      - Authorization
+      - X-Api-Key
+      - X-Amz-Security-Token
+      - X-Amz-User-Agent
+      - istabletuser
+      - Authorization
+      - AccessToken
+      - authorization
+      - accesstoken
+      - RefreshToken
+      - refreshtoken
+      - language
+      - platformtype
+      - PlatformType
+      - webVersion
+      - webversion
+  
+functions:
+  test:
+    handler: handler.test
+    environment:
+      API_CODE: "001"
+    events:
+      - http:
+          cors: ${self:custom.cors}
+          path: test
+          method: get
+          integration: lambda-proxy
+
+
+resources:
+  Resources:
+    GatewayResponse:
+      Type: "AWS::ApiGateway::GatewayResponse"
+      Properties:
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
+        ResponseType: EXPIRED_TOKEN
+        RestApiId:
+          Ref: "ApiGatewayRestApi"
+        StatusCode: "401"
+
+    AuthFailureGatewayResponse:
+      Type: "AWS::ApiGateway::GatewayResponse"
+      Properties:
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
+        ResponseType: UNAUTHORIZED
+        RestApiId:
+          Ref: "ApiGatewayRestApi"
+        StatusCode: "401"

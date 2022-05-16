@@ -1,0 +1,6 @@
+--timeout 10000
+--recursive
+--reporter list
+--ui bdd
+--exit
+test/**/*.test.js

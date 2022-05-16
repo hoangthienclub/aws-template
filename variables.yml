@@ -1,0 +1,40 @@
+dev:
+    STAGE: dev
+    REGION: us-east-1
+    COGNITO_CLIENT_ID: test
+    USER_POOL_ID: test
+    USER_POOL_ARN: test
+    MONGO_DB_CLUSTER : 'cluster0.clbsi.mongodb.net'
+    MONGO_DB_U : 'test'
+    MONGO_DB_P : 'test'
+    BUCKET : 'testtest' 
+    AWS_ID : test
+    AWS_KEY : test         
+
+stage:
+    STAGE: dev
+    REGION: us-east-1
+    COGNITO_CLIENT_ID: test
+    USER_POOL_ID: test
+    USER_POOL_ARN: test
+    MONGO_DB_CLUSTER : 'cluster0.clbsi.mongodb.net'
+    MONGO_DB_U : 'test'
+    MONGO_DB_P : 'test'
+    BUCKET : 'testtest' 
+    AWS_ID : test
+    AWS_KEY : test    
+
+production:
+    STAGE: dev
+    REGION: us-east-1
+    COGNITO_CLIENT_ID: test
+    USER_POOL_ID: test
+    USER_POOL_ARN: test
+    MONGO_DB_CLUSTER : 'cluster0.clbsi.mongodb.net'
+    MONGO_DB_U : 'test'
+    MONGO_DB_P : 'test'
+    BUCKET : 'testtest' 
+    AWS_ID : test
+    AWS_KEY : test  
+    
+    

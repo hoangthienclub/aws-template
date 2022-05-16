@@ -1,0 +1,38 @@
+image: lambci/lambda:build-nodejs12.x
+pipelines:
+    branches:
+        develop:
+            - step:
+                deployment: test
+                script:
+                    - npm install
+                    - npm install serverless@2.11.0 -g
+                    - serverless config credentials --overwrite --provider aws --key $PCH_AWS_ACCESS_KEY_DEV --secret $PCH_AWS_SECRET_KEY_DEV
+                    - serverless create_domain -s dev -r us-east-1 --security_group_id $PCH_SECURITY_GROUP_ID_DEV --subnet_id_1 $PCH_SUBNET_ID_1_DEV --subnet_id_2 $PCH_SUBNET_ID_2_DEV --subnet_id_3 $PCH_SUBNET_ID_3_DEV
+                    - serverless deploy -s dev -r us-east-1 --security_group_id $PCH_SECURITY_GROUP_ID_DEV --subnet_id_1 $PCH_SUBNET_ID_1_DEV --subnet_id_2 $PCH_SUBNET_ID_2_DEV --subnet_id_3 $PCH_SUBNET_ID_3_DEV
+                caches:
+                    - node
+
+        stage:
+            - step:
+                deployment: staging
+                script:
+                    - npm install
+                    - npm install serverless@2.11.0 -g
+                    - serverless config credentials --overwrite --provider aws --key $PCH_AWS_ACCESS_KEY_STAGE --secret $PCH_AWS_SECRET_KEY_STAGE
+                    - serverless create_domain -s stg -r us-east-1 --security_group_id $PCH_SECURITY_GROUP_ID_STAGE --subnet_id_1 $PCH_SUBNET_ID_1_STAGE --subnet_id_2 $PCH_SUBNET_ID_2_STAGE --subnet_id_3 $PCH_SUBNET_ID_3_STAGE
+                    - serverless deploy -s stg -r us-east-1 --security_group_id $PCH_SECURITY_GROUP_ID_STAGE --subnet_id_1 $PCH_SUBNET_ID_1_STAGE --subnet_id_2 $PCH_SUBNET_ID_2_STAGE --subnet_id_3 $PCH_SUBNET_ID_3_STAGE
+                caches:
+                    - node
+
+        master:
+            - step:
+                deployment: production
+                script:
+                    - npm install
+                    - npm install serverless@2.11.0 -g
+                    - serverless config credentials --overwrite --provider aws --key $PCH_AWS_ACCESS_KEY_PROD --secret $PCH_AWS_SECRET_KEY_PROD
+                    - serverless create_domain -s prod -r us-east-1 --security_group_id $PCH_SECURITY_GROUP_ID_PROD --subnet_id_1 $PCH_SUBNET_ID_1_PROD --subnet_id_2 $PCH_SUBNET_ID_2_PROD --subnet_id_3 $PCH_SUBNET_ID_3_PROD
+                    - serverless deploy -s prod -r us-east-1 --security_group_id $PCH_SECURITY_GROUP_ID_PROD --subnet_id_1 $PCH_SUBNET_ID_1_PROD --subnet_id_2 $PCH_SUBNET_ID_2_PROD --subnet_id_3 $PCH_SUBNET_ID_3_PROD
+                caches:
+                    - node

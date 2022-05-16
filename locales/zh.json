@@ -1,0 +1,10 @@
+{
+    "BAD_REQUEST": "Bad request!",
+    "CANNOT_CREATE_PRODUCT": "Cannot create product!",
+    "NOT_HAVE_PERMISSION": "Don't have permission!",
+    "PRODUCT_NOT_FOUND": "Product not found!",
+    "CANNOT_UPDATE_PRODUCT": "Cannot update product!",
+    "CANNOT_DELETE_PRODUCT": "Cannot delete product!",
+    "PRODUCT_ALREADY_EXIST": "Product already exist!",
+    "CANNOT_UPDATE_SERIALIZABLE_FOR_OTHER_PLATFORM": "Cannot update serializable for other platform"
+}
